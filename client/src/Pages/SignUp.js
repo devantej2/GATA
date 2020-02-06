@@ -1,18 +1,18 @@
-import React from "react";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import axios from "axios";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import "../App.css";
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -23,40 +23,42 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles(theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(3)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
-}));
+class SignUp extends Component {
+  state = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    username: "",
+    password: ""
+  };
 
-export default function SignUp() {
-  const classes = useStyles();
+  changeHandler = e => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+  submitHandler = e => {
+    e.preventDefault();
+    axios.post("/api/signup", this.state);
+    this.props.history.push("/");
+  };
+
+  login = e => {
+    e.preventDefault();
+    this.props.history.push("/login");
+  };
+
+  render() {
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Avatar>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className="form">
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -66,6 +68,8 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="firstName"
+                value={this.state.firstName}
+                onChange={this.changeHandler}
                 label="First Name"
                 autoFocus
               />
@@ -76,6 +80,8 @@ export default function SignUp() {
                 required
                 fullWidth
                 id="lastName"
+                value={this.state.lastName}
+                onChange={this.changeHandler}
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
@@ -90,6 +96,8 @@ export default function SignUp() {
                 label="Email"
                 type="email"
                 id="email"
+                value={this.state.email}
+                onChange={this.changeHandler}
                 autoComplete="current-email"
               />
             </Grid>
@@ -101,6 +109,8 @@ export default function SignUp() {
                 id="username"
                 label="Username"
                 name="username"
+                value={this.state.username}
+                onChange={this.changeHandler}
                 autoComplete="username"
               />
             </Grid>
@@ -113,31 +123,35 @@ export default function SignUp() {
                 label="Password"
                 type="password"
                 id="password"
+                value={this.state.password}
+                onChange={this.changeHandler}
                 autoComplete="current-password"
               />
             </Grid>
           </Grid>
           <Button
             type="submit"
+            onClick={this.submitHandler}
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
           >
             Sign Up
           </Button>
+
           <Grid container1 justify="flex-end">
             <Grid item>
-              <Link href="/" variant="body2">
+              <Link href="/login" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
         </form>
-      </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
-    </Container>
-  );
+        <Box mt={5}>
+          <Copyright />
+        </Box>
+      </Container>
+    );
+  }
 }
+export default withRouter(SignUp);

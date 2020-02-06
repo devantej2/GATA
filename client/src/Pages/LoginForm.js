@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -10,9 +11,10 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import "../index.css";
+import UserContext from "../context/UserContext";
+import Auth from "../utils/Auth";
 
 function Copyright() {
   return (
@@ -27,46 +29,49 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles(theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
-}));
+class LoginForm extends Component {
+  static contextType = UserContext;
 
-export default function SignIn() {
-  const classes = useStyles();
+  state = {
+    username: "",
+    password: ""
+  };
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+  changeHandler = e => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
+
+  submitHandler = e => {
+    e.preventDefault();
+    const { username, password } = this.state;
+    if (username && password) {
+      Auth.logIn(username, password, response => {
+        this.context.setUser(response);
+        this.props.history.push("/");
+      });
+    }
+  };
+
+  render() {
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Avatar>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form onSubmit={this.submitHandler}>
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
             id="username"
+            value={this.state.username}
+            onChange={this.changeHandler}
             label="Username"
             name="username"
             autoComplete="current-username"
@@ -78,6 +83,8 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
+            value={this.state.password}
+            onChange={this.changeHandler}
             label="Password"
             type="password"
             id="password"
@@ -87,13 +94,7 @@ export default function SignIn() {
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
+          <Button type="submit" fullWidth variant="contained" color="primary">
             Sign In
           </Button>
           <Grid container1>
@@ -109,10 +110,13 @@ export default function SignIn() {
             </Grid>
           </Grid>
         </form>
-      </div>
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
-  );
+
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+    );
+  }
 }
+
+export default withRouter(LoginForm);

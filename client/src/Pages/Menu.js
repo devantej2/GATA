@@ -9,15 +9,12 @@ import MenuList from "@material-ui/core/MenuList";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import Grow from "@material-ui/core/Grow";
 import { Link } from "react-router-dom";
-import { red } from "@material-ui/core/colors";
+import Logout from "./Logout";
 
 function MenuAppBar() {
   const useStyles = makeStyles(theme => ({
     root: {
       display: "flex"
-    },
-    paper: {
-      marginRight: theme.spacing(2)
     }
   }));
 
@@ -94,7 +91,6 @@ function MenuAppBar() {
                         <MenuItem onClick={handleClose}>
                           <Link to="/main">Dashboard</Link>
                         </MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
                         <MenuItem onClick={handleClose}>About Us</MenuItem>
                       </MenuList>
                     </ClickAwayListener>
@@ -105,6 +101,7 @@ function MenuAppBar() {
             <Typography variant="h4" align="center" id="logo-title">
               G.A.T.A
             </Typography>
+            <Logout />
           </Toolbar>
         </AppBar>
       </div>

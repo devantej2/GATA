@@ -1,23 +1,57 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import SignIn from "./Pages/SignIn";
+import React, { Component } from "react";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { ThemeProvider } from "@material-ui/core/styles";
+import authenticatedAxios from "./utils/AuthenticatedAxios";
+import ProtectedRoute from "./Pages/ProtectedRoute";
+import LoginPage from "./Pages/LoginPage";
+import HomePage from "./Pages/HomePage";
+import UserContext from "./context/UserContext";
 import SignUp from "./Pages/SignUp";
-import Main from "./Pages/Main";
-import Profile from "./Pages/Profile";
 
-function App() {
-  return (
-    <Router>
-      <div>
-        <Switch>
-          <Route exact path="/" component={SignIn} />
-          <Route exact path="/signup" component={SignUp} />
-          <Route exact path="/main" component={Main} />
-          <Route exact path="/profile" component={Profile} />
-        </Switch>
-      </div>
-    </Router>
-  );
+class App extends Component {
+  state = {
+    user: null
+  };
+
+  setUser = user => {
+    this.setState({ user });
+  };
+
+  componentDidMount() {
+    const token = localStorage.getItem("token");
+    if (token) {
+      authenticatedAxios
+        .get("/api/me")
+        .then(response => this.setUser(response.data));
+    }
+  }
+
+  render() {
+    const { user } = this.state;
+    const setUser = this.setUser;
+    return (
+      <Router>
+        <div>
+          <header>
+            <nav>
+              <Link to="/">Home</Link> | <Link to="/login">Login</Link>
+            </nav>
+          </header>
+
+          <UserContext.Provider
+            value={{
+              user: user,
+              setUser: setUser
+            }}
+          >
+            <ProtectedRoute exact path="/" component={HomePage} />
+            <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/signup" component={SignUp} />
+          </UserContext.Provider>
+        </div>
+      </Router>
+    );
+  }
 }
 
 export default App;

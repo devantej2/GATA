@@ -4,16 +4,14 @@ import {
   Container,
   Fab,
   Button,
-  TextField,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
-  DialogTitle,
-  InputLabel,
-  Input,
-  Select,
-  FormControl
+  DialogTitle
+  // InputLabel,
+  // Input,
+  // Select,
+  // FormControl
 } from "@material-ui/core/";
 import SimpleMenu from "../Menu";
 import WeightPop from "../WeightPop";
@@ -29,7 +27,7 @@ class TrackButton extends Component {
   };
 
   componentDidMount() {
-    API.user.get().then(res => console.log('res.data', res.data));
+    API.user.get().then(res => console.log("res.data", res.data));
     // tasks: res.data })
   }
 
@@ -86,7 +84,6 @@ class TrackButton extends Component {
                   ))}
                 </Select>
               </FormControl> */}
-
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose} color="primary">
@@ -102,7 +99,3 @@ class TrackButton extends Component {
   }
 }
 export default TrackButton;
-
-
-
-
